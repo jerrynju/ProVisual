@@ -43,7 +43,7 @@ import com.prorf.app.ui.components.rememberToast
 import com.prorf.app.ui.theme.ProColors
 
 @Composable
-fun ResultsOverviewScreen(nav: NavController, id: String?) {
+fun ResultsOverviewScreen(nav: NavController, id: String?, showBack: Boolean = true) {
     val wf = SampleData.workflow(id)
     val toast = rememberToast()
     var tab by remember { mutableIntStateOf(0) }
@@ -52,7 +52,7 @@ fun ResultsOverviewScreen(nav: NavController, id: String?) {
         ProTopBar(
             title = "结果总览",
             subtitle = wf.title,
-            onBack = { nav.popBackStack() },
+            onBack = if (showBack) ({ nav.popBackStack(); Unit }) else null,
             actions = listOf(Icons.Filled.IosShare to { toast("导出结果报告") }),
         )
         Spacer(Modifier.height(8.dp))

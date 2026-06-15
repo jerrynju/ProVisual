@@ -70,7 +70,9 @@ fun ProfileScreen(nav: NavController) {
             Box(Modifier.padding(horizontal = 16.dp)) {
                 ProCard(padding = PaddingValues(vertical = 4.dp)) {
                     Column {
-                        MenuRow(Icons.Filled.Dashboard, ProColors.Primary, "工作流模板库") { nav.navigate(Routes.TEMPLATES) }
+                        MenuRow(Icons.Filled.Dashboard, ProColors.Primary, "首页仪表盘") { nav.navigate("home") }
+                        Divider()
+                        MenuRow(Icons.Filled.ViewModule, ProColors.Cyan, "工作流模板库") { nav.navigate(Routes.TEMPLATES) }
                         Divider()
                         MenuRow(Icons.Filled.BarChart, ProColors.Orange, "分析图表") { nav.navigate(Routes.ANALYSIS) }
                         Divider()

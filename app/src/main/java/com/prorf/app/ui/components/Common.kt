@@ -32,19 +32,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.prorf.app.ui.theme.ProColors
 
-/** A rounded white card used throughout the app. */
+/** A rounded card used throughout the app, with a soft Material 3 elevation. */
 @Composable
 fun ProCard(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     padding: PaddingValues = PaddingValues(16.dp),
+    containerColor: Color = ProColors.Surface,
+    borderColor: Color? = ProColors.Border,
+    corner: Int = 20,
+    elevation: Int = 1,
     content: @Composable () -> Unit,
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        color = ProColors.Surface,
-        border = BorderStroke(1.dp, ProColors.Border),
+        shape = RoundedCornerShape(corner.dp),
+        color = containerColor,
+        border = borderColor?.let { BorderStroke(1.dp, it) },
+        shadowElevation = elevation.dp,
     ) {
         Box(
             Modifier
@@ -70,6 +75,20 @@ fun IconBadge(
         contentAlignment = Alignment.Center,
     ) {
         Icon(icon, contentDescription = null, tint = accent, modifier = Modifier.size((size * 0.5).dp))
+    }
+}
+
+/** Small filled code chip, e.g. "TX" / "COUP 2dB". */
+@Composable
+fun TypeChip(text: String, accent: Color) {
+    Surface(shape = RoundedCornerShape(6.dp), color = accent.copy(alpha = 0.14f)) {
+        Text(
+            text = text,
+            color = accent,
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
+        )
     }
 }
 

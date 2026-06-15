@@ -25,16 +25,60 @@ data class Workflow(
     val tags: List<String>,
 )
 
+/** A key/value sub-parameter shown inside a flow node card. */
+data class ParamKV(
+    val label: String,
+    val value: String,
+    /** null = neutral, true = green, false = red. */
+    val positive: Boolean? = null,
+)
+
 /** A single node in a workflow's flow / topology list. */
 data class FlowNode(
     val id: String,
     val index: Int,
     val name: String,
     val typeLabel: String,
+    /** Short code shown on the timeline marker and the type chip, e.g. "TX". */
+    val code: String,
+    /** Optional extra appended to the chip, e.g. "2dB" / "1km". */
+    val chipExtra: String? = null,
     val value: String,
     val valuePositive: Boolean,
     val icon: ImageVector,
     val accent: Color,
+    val params: List<ParamKV> = emptyList(),
+    /** Branch parameters (e.g. a coupler's tap output). */
+    val branch: List<ParamKV> = emptyList(),
+)
+
+/** A port on a topology graph node. */
+data class GraphPort(
+    val name: String,
+    val value: String? = null,
+    val highlight: Boolean = false,
+)
+
+/** A node in the topology graph editor, positioned in dp on the canvas. */
+data class GraphNode(
+    val id: String,
+    val title: String,
+    val code: String,
+    val icon: ImageVector,
+    val accent: Color,
+    val x: Int,
+    val y: Int,
+    val inputs: List<GraphPort> = emptyList(),
+    val outputs: List<GraphPort> = emptyList(),
+)
+
+/** A directed connection between an output port and an input port. */
+data class GraphEdge(
+    val from: String,
+    val fromPort: Int,
+    val to: String,
+    val toPort: Int,
+    val color: Color,
 )
 
 /** A configurable parameter shown on the node-properties form. */

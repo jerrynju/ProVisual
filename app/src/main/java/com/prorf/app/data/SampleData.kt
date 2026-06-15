@@ -101,14 +101,96 @@ object SampleData {
     fun workflow(id: String?): Workflow = workflows.firstOrNull { it.id == id } ?: workflows.first()
 
     val flowNodes = listOf(
-        FlowNode("tx", 1, "发射机", "信号源", "+25.0 dBm", true, Icons.Filled.Podcasts, ProColors.Primary),
-        FlowNode("pa", 2, "功率放大器", "有源器件", "+43.0 dB", true, Icons.Filled.Bolt, ProColors.Orange),
-        FlowNode("coup", 3, "定向耦合器", "无源器件", "-1.5 dB", false, Icons.Filled.CallSplit, ProColors.Purple),
-        FlowNode("ant1", 4, "发射天线", "天线", "+15.0 dBi", true, Icons.Filled.SettingsInputAntenna, ProColors.Cyan),
-        FlowNode("fspl", 5, "自由空间传播", "信道", "-161.2 dB", false, Icons.Filled.Waves, ProColors.Red),
-        FlowNode("ant2", 6, "接收天线", "天线", "+15.0 dBi", true, Icons.Filled.SettingsInputAntenna, ProColors.Cyan),
-        FlowNode("lna", 7, "低噪声放大器", "有源器件", "+18.0 dB", true, Icons.Filled.GraphicEq, ProColors.Green),
-        FlowNode("rx", 8, "接收机", "信号端", "-84.2 dBm", false, Icons.Filled.CenterFocusStrong, ProColors.Primary),
+        FlowNode(
+            "tx", 1, "发射机", "信号源", "TX", null, "+25.0 dBm", true,
+            Icons.Filled.Podcasts, ProColors.Primary,
+            params = listOf(ParamKV("Pout", "+20.0 dBm"), ParamKV("频率", "2.4 GHz"), ParamKV("模式", "CW")),
+        ),
+        FlowNode(
+            "pa", 2, "功率放大器", "有源器件", "AMP", null, "+43.0 dB", true,
+            Icons.Filled.Bolt, ProColors.Orange,
+            params = listOf(ParamKV("增益", "+23.0 dB"), ParamKV("NF", "2.0 dB"), ParamKV("P1dB", "+33.0 dB")),
+        ),
+        FlowNode(
+            "coup", 3, "定向耦合器", "无源器件", "COUP", "2dB", "-1.5 dB", false,
+            Icons.Filled.CallSplit, ProColors.Purple,
+            params = listOf(ParamKV("插损", "-20.0 dB"), ParamKV("插入损耗", "-9.8 dB")),
+            branch = listOf(ParamKV("返增辐", "-0.5 dB", false), ParamKV("耦合端", "-20.8 dB", false)),
+        ),
+        FlowNode(
+            "ant1", 4, "发射天线", "天线", "ANT", null, "+15.0 dBi", true,
+            Icons.Filled.SettingsInputAntenna, ProColors.Cyan,
+            params = listOf(ParamKV("增益", "+15.0 dBi"), ParamKV("方向性", "12.0 dB")),
+        ),
+        FlowNode(
+            "fspl", 5, "自由空间传播", "信道", "PATH", "1km", "-161.2 dB", false,
+            Icons.Filled.Waves, ProColors.Red,
+            params = listOf(ParamKV("频率", "2.4 GHz"), ParamKV("距离", "1.0 km")),
+        ),
+        FlowNode(
+            "ant2", 6, "接收天线", "天线", "ANT", null, "+15.0 dBi", true,
+            Icons.Filled.SettingsInputAntenna, ProColors.Cyan,
+            params = listOf(ParamKV("增益", "+15.0 dBi"), ParamKV("方向性", "12.0 dB")),
+        ),
+        FlowNode(
+            "lna", 7, "低噪声放大器", "有源器件", "LNA", null, "+18.0 dB", true,
+            Icons.Filled.GraphicEq, ProColors.Green,
+            params = listOf(ParamKV("增益", "+18.0 dB"), ParamKV("NF", "1.2 dB")),
+        ),
+        FlowNode(
+            "rx", 8, "接收机", "信号端", "RX", null, "-84.2 dBm", false,
+            Icons.Filled.CenterFocusStrong, ProColors.Primary,
+            params = listOf(ParamKV("NF", "3.0 dB"), ParamKV("灵敏度", "-146.0 dBm")),
+        ),
+    )
+
+    /** Topology graph: node boxes positioned on the canvas (dp) + connections. */
+    val graphNodes = listOf(
+        GraphNode(
+            "tx", "发射机", "TX", Icons.Filled.Podcasts, ProColors.Primary, x = 24, y = 24,
+            outputs = listOf(GraphPort("Pout"), GraphPort("Freq")),
+        ),
+        GraphNode(
+            "pa", "功率放大器", "AMP", Icons.Filled.Bolt, ProColors.Orange, x = 24, y = 180,
+            inputs = listOf(GraphPort("Pin")), outputs = listOf(GraphPort("Gain")),
+        ),
+        GraphNode(
+            "coup", "定向耦合器", "COUP", Icons.Filled.CallSplit, ProColors.Purple, x = 24, y = 336,
+            inputs = listOf(GraphPort("Input")),
+            outputs = listOf(GraphPort("Through", highlight = true), GraphPort("Coupled", highlight = true)),
+        ),
+        GraphNode(
+            "ant1", "发射天线", "ANT", Icons.Filled.SettingsInputAntenna, ProColors.Cyan, x = 230, y = 336,
+            inputs = listOf(GraphPort("Input")), outputs = listOf(GraphPort("EIRP")),
+        ),
+        GraphNode(
+            "fspl", "自由空间传播", "PATH", Icons.Filled.Waves, ProColors.Red, x = 24, y = 492,
+            inputs = listOf(GraphPort("EIRP")), outputs = listOf(GraphPort("Prx")),
+        ),
+        GraphNode(
+            "ant2", "接收天线", "ANT", Icons.Filled.SettingsInputAntenna, ProColors.Cyan, x = 230, y = 492,
+            inputs = listOf(GraphPort("Prx")), outputs = listOf(GraphPort("Pout")),
+        ),
+        GraphNode(
+            "rx", "接收机", "RX", Icons.Filled.CenterFocusStrong, ProColors.Primary, x = 130, y = 648,
+            inputs = listOf(GraphPort("Pin"), GraphPort("NF")),
+        ),
+    )
+
+    val graphEdges = listOf(
+        GraphEdge("tx", 0, "pa", 0, ProColors.Primary),
+        GraphEdge("pa", 0, "coup", 0, ProColors.Orange),
+        GraphEdge("coup", 0, "ant1", 0, ProColors.Green),
+        GraphEdge("ant1", 0, "fspl", 0, ProColors.Cyan),
+        GraphEdge("fspl", 0, "ant2", 0, ProColors.Red),
+        GraphEdge("ant2", 0, "rx", 0, ProColors.Cyan),
+        GraphEdge("coup", 1, "rx", 1, ProColors.Purple),
+    )
+
+    // Flow summary strip
+    val flowSummary = listOf(
+        Metric("链路增益", "+57.0", "dBm", ProColors.Green),
+        Metric("系统余量", "+52.8", "dB", ProColors.Primary),
     )
 
     val nodeParams = listOf(

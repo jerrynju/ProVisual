@@ -53,7 +53,7 @@ fun ProRFApp() {
                             onClick = {
                                 if (!selected) {
                                     navController.navigate(dest.route) {
-                                        popUpTo(TopDest.Home.route) { saveState = true }
+                                        popUpTo(TopDest.Workflows.route) { saveState = true }
                                         launchSingleTop = true
                                         restoreState = true
                                     }
@@ -76,15 +76,16 @@ fun ProRFApp() {
     ) { inner ->
         NavHost(
             navController = navController,
-            startDestination = TopDest.Home.route,
+            startDestination = TopDest.Workflows.route,
             modifier = Modifier.padding(inner),
         ) {
             // Top-level destinations
-            composable(TopDest.Home.route) { HomeDashboardScreen(navController) }
             composable(TopDest.Workflows.route) { WorkflowListScreen(navController) }
             composable(TopDest.Nodes.route) { NodeLibraryScreen(navController) }
+            composable(TopDest.Results.route) { ResultsOverviewScreen(navController, "rf-link", showBack = false) }
             composable(TopDest.Scenes.route) { SceneLibraryScreen(navController) }
             composable(TopDest.Profile.route) { ProfileScreen(navController) }
+            composable("home") { HomeDashboardScreen(navController) }
 
             // Secondary destinations
             composable(

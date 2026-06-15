@@ -16,12 +16,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -59,7 +62,7 @@ fun NodePropertiesScreen(nav: NavController, id: String?) {
         )
         Spacer(Modifier.height(8.dp))
         SegmentTabs(
-            tabs = listOf("参数", "输入输出", "规格", "图表"),
+            tabs = listOf("参数", "输入输出", "结果", "图表", "诊断"),
             selected = tab,
             onSelected = { tab = it },
             modifier = Modifier.padding(horizontal = 16.dp),
@@ -95,18 +98,36 @@ fun NodePropertiesScreen(nav: NavController, id: String?) {
                         ProCard {
                             Column {
                                 SectionHeader("基本参数")
-                                Spacer(Modifier.height(8.dp))
-                                SampleData.nodeParams.take(4).forEach { ParamRow(it) }
+                                Spacer(Modifier.height(12.dp))
+                                SampleData.nodeParams.take(4).forEach { ParamField(it) }
                             }
                         }
                     }
                     item {
                         ProCard {
                             Column {
-                                SectionHeader("高级参数")
-                                Spacer(Modifier.height(8.dp))
-                                SampleData.nodeParams.drop(4).forEach { ParamRow(it) }
+                                Row(
+                                    Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Text("高级参数", style = MaterialTheme.typography.titleMedium, color = ProColors.TextPrimary)
+                                    Icon(Icons.Filled.ExpandMore, null, tint = ProColors.TextSecondary)
+                                }
+                                Spacer(Modifier.height(12.dp))
+                                SampleData.nodeParams.drop(4).forEach { ParamField(it) }
                             }
+                        }
+                    }
+                    item {
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Icon(Icons.Filled.CheckCircle, null, tint = ProColors.Green, modifier = Modifier.size(18.dp))
+                            Spacer(Modifier.width(6.dp))
+                            Text("计算有效", style = MaterialTheme.typography.labelMedium, color = ProColors.Green)
                         }
                     }
                 }
@@ -127,23 +148,31 @@ fun NodePropertiesScreen(nav: NavController, id: String?) {
     }
 }
 
+/** A Material-style read-only field: label on the left, boxed value + unit on the right. */
 @Composable
-private fun ParamRow(p: NodeParam) {
+private fun ParamField(p: NodeParam) {
     Row(
-        Modifier.fillMaxWidth().padding(vertical = 10.dp),
+        Modifier.fillMaxWidth().padding(vertical = 7.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(p.label, style = MaterialTheme.typography.bodyMedium, color = ProColors.TextSecondary)
-        Row(verticalAlignment = Alignment.Bottom) {
-            Text(
-                p.value,
-                style = MaterialTheme.typography.titleSmall,
-                color = if (p.highlight) ProColors.Orange else ProColors.TextPrimary,
-                fontWeight = FontWeight.Bold,
-            )
-            Spacer(Modifier.width(4.dp))
-            Text(p.unit, style = MaterialTheme.typography.labelSmall, color = ProColors.TextTertiary, modifier = Modifier.padding(bottom = 2.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Surface(
+                shape = RoundedCornerShape(10.dp),
+                color = if (p.highlight) ProColors.OrangeSoft else ProColors.SurfaceAlt,
+                border = androidx.compose.foundation.BorderStroke(1.dp, if (p.highlight) ProColors.Orange.copy(alpha = 0.4f) else ProColors.Border),
+            ) {
+                Text(
+                    p.value,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = if (p.highlight) ProColors.Orange else ProColors.TextPrimary,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+            }
+            Spacer(Modifier.width(8.dp))
+            Text(p.unit, style = MaterialTheme.typography.labelSmall, color = ProColors.TextTertiary, modifier = Modifier.width(28.dp))
         }
     }
 }
