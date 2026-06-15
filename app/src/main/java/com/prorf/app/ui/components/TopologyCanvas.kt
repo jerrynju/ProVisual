@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -175,7 +176,10 @@ private fun GraphNodeCard(node: GraphNode, modifier: Modifier, onClick: () -> Un
                     fontWeight = FontWeight.SemiBold,
                     color = ProColors.TextPrimary,
                     maxLines = 1,
+                    modifier = Modifier.weight(1f),
                 )
+                // status (§9): computed & valid
+                Box(Modifier.size(6.dp).clip(CircleShape).background(ProColors.Green))
             }
             Spacer(Modifier.height(PORTS_TOP.dp))
             val rows = maxOf(node.inputs.size, node.outputs.size)

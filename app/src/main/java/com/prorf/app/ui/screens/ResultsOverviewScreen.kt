@@ -32,8 +32,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.prorf.app.AppCapabilities
 import com.prorf.app.data.Metric
 import com.prorf.app.data.SampleData
+import com.prorf.app.platform.Capabilities
 import com.prorf.app.ui.components.BarChart
 import com.prorf.app.ui.components.ProCard
 import com.prorf.app.ui.components.ProTopBar
@@ -53,7 +55,13 @@ fun ResultsOverviewScreen(nav: NavController, id: String?, showBack: Boolean = t
             title = "结果总览",
             subtitle = wf.title,
             onBack = if (showBack) ({ nav.popBackStack(); Unit }) else null,
-            actions = listOf(Icons.Filled.IosShare to { toast("导出结果报告") }),
+            actions = listOf(
+                Icons.Filled.IosShare to {
+                    // §10: gate behind a capability rather than an ad-hoc pro check.
+                    if (AppCapabilities.service.has(Capabilities.EXPORT_REPORT)) toast("正在导出结果报告…")
+                    else toast("导出报告为 Pro 功能，请升级后使用")
+                },
+            ),
         )
         Spacer(Modifier.height(8.dp))
         SegmentTabs(
@@ -86,7 +94,7 @@ fun ResultsOverviewScreen(nav: NavController, id: String?, showBack: Boolean = t
                             Text("自由空间链路损耗", style = MaterialTheme.typography.bodyMedium, color = ProColors.TextSecondary)
                             Text("FSPL @ 2.4 GHz · 10 km", style = MaterialTheme.typography.labelSmall, color = ProColors.TextTertiary)
                         }
-                        Text("-151.2 dB", style = MaterialTheme.typography.titleMedium, color = ProColors.Red, fontWeight = FontWeight.Bold)
+                        Text("${SampleData.pathLoss.value} ${SampleData.pathLoss.unit}", style = MaterialTheme.typography.titleMedium, color = ProColors.Red, fontWeight = FontWeight.Bold)
                     }
                 }
             }

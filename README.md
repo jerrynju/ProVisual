@@ -50,6 +50,22 @@
 
 在 Android Studio 中直接打开工程并运行到设备 / 模拟器即可。
 
+## 架构分层（对齐 ProRF Build Spec v1.0）
+
+按 Spec 的分层原则在 app 内以包结构落地（详见 `docs/decisions/ADR-0001`）：
+
+| 层 | 包 | 职责 |
+| --- | --- | --- |
+| L0 平台核心 | `platform` | Graph/Node/Port/Edge、DAG 执行引擎（拓扑排序+缓存+环检测）、节点注册表、CapabilityService。**不含任何 RF/UI 概念** |
+| L1 工程基础 | `engineering` | `Quantity = 值 + 单位 + 量纲`，对数/线性处理，FSPL 公式 |
+| L3 RF 领域 | `domain.rf` | RF 节点定义（纯执行器）、链路预算工作流模板、`RfLinkBudget.compute()`，仅依赖 platform+engineering |
+| L2 UI | `ui` + `data.RfPresenter` | 渲染计算结果并叠加图标/配色，**不做任何 RF 计算** |
+| L4 App Shell | `com.prorf.app` | MainActivity、CapabilityService 装配 |
+
+关键改造：参数采用 `Quantity`（值+单位+量纲），杜绝裸 double 与字符串解析单位（§7）；链路预算由引擎**计算**、UI 仅展示（§6/§12）；Inspector 改为 **输入/参数/输出/诊断/图表**，节点卡片含 标题/参数摘要/状态/输出摘要（§9）；导出经 `CapabilityService.has()` 门控（§10）。
+
+自验证：`./gradlew :app:testDebugUnitTest` —— 执行引擎拓扑/环检测、链路预算计算（EIRP/接收功率/余量）单元测试全部通过。
+
 ## 目录结构
 
 ```

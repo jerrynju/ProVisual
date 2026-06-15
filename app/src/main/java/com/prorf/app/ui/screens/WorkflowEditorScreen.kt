@@ -262,6 +262,9 @@ private fun FlowTimelineRow(node: FlowNode, isFirst: Boolean, isLast: Boolean, o
                         TypeChip(node.code + (node.chipExtra?.let { " $it" } ?: ""), node.accent)
                         Spacer(Modifier.width(8.dp))
                         Text(node.name, style = MaterialTheme.typography.titleSmall, color = ProColors.TextPrimary, modifier = Modifier.weight(1f))
+                        // status (§9): computed & valid
+                        Box(Modifier.size(7.dp).clip(CircleShape).background(ProColors.Green))
+                        Spacer(Modifier.width(8.dp))
                         Text(
                             node.value,
                             style = MaterialTheme.typography.titleMedium,
