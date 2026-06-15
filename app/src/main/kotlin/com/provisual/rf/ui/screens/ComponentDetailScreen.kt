@@ -46,13 +46,6 @@ fun ComponentDetailScreen(componentId: String, onBack: () -> Unit) {
             containerColor = Surface,
             contentColor = Primary,
             edgePadding = 16.dp,
-            indicator = { tabPositions ->
-                TabRowDefaults.SecondaryIndicator(
-                    modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
-                    height = 2.dp,
-                    color = Primary
-                )
-            },
             divider = { HorizontalDivider(color = Border, thickness = 0.5.dp) }
         ) {
             tabs.forEachIndexed { index, tab ->

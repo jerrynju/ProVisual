@@ -53,13 +53,6 @@ fun IssuesScreen(onBack: () -> Unit) {
             containerColor = Surface,
             contentColor = Primary,
             edgePadding = 16.dp,
-            indicator = { tabPositions ->
-                TabRowDefaults.SecondaryIndicator(
-                    modifier = Modifier.tabIndicatorOffset(tabPositions[selectedFilter]),
-                    height = 2.dp,
-                    color = Primary
-                )
-            },
             divider = { HorizontalDivider(color = Border, thickness = 0.5.dp) }
         ) {
             filters.forEachIndexed { index, filter ->

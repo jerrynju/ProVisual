@@ -114,13 +114,6 @@ fun LibraryScreen() {
                 selectedTabIndex = selectedTab,
                 containerColor = Surface,
                 contentColor = Primary,
-                indicator = { tabPositions ->
-                    TabRowDefaults.SecondaryIndicator(
-                        modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
-                        height = 2.dp,
-                        color = Primary
-                    )
-                },
                 divider = {}
             ) {
                 tabs.forEachIndexed { index, tab ->
